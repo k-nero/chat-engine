@@ -39,11 +39,11 @@
     <a href="https://github.com/thanhplassma/shorten-link"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/thanhplassma/shorten-link">View Demo</a>
+    <a href="https://github.com/thanhplassma/chat-engine">View Demo</a>
     ·
-    <a href="https://github.com/thanhplassma/shorten-link/issues">Report Bug</a>
+    <a href="https://github.com/thanhplassma/chat-engine/issues">Report Bug</a>
     ·
-    <a href="https://github.com/thanhplassma/shorten-link/issues">Request Feature</a>
+    <a href="https://github.com/thanhplassma/chat-engine/issues">Request Feature</a>
   </p>
 </div>
 
