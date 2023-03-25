@@ -6,7 +6,7 @@ const chatSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "Message"
         },
-        users: [
+        members: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "User",
@@ -18,7 +18,11 @@ const chatSchema = new Schema(
                 type: Schema.Types.ObjectId,
                 ref: "Message"
             }
-        ]
+        ],
+        admin: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        }
     },
     {
         timestamps: true

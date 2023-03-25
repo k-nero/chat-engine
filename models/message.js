@@ -19,7 +19,19 @@ const messageSchema  =  new schema (
         content: {
             type: String,
             required: true
-        }
+        },
+        messageAttachments: [
+            {
+                type: schema.Types.ObjectId,
+                ref: "MessageAttachment"
+            },
+        ],
+        messageReactions: [
+            {
+                type: schema.Types.ObjectId,
+                ref: "MessageReaction"
+            }
+        ]
     },
     {
         timestamps: true
