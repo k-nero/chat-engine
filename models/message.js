@@ -18,7 +18,6 @@ const messageSchema  =  new schema (
         },
         content: {
             type: String,
-            required: true
         },
         messageAttachments: [
             {

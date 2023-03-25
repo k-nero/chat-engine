@@ -4,16 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('./config/mongoose.js');
-mongoose?.connect(process.env.MONGODB_URI , {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-});
 
 const authApi = require('./api/auth');
 const messageApi = require('./api/message');
 
 const app = express();
+
+mongoose(app, process.env.MONGODB_URI);
 
 app.use(logger('dev'));
 app.use(express.json());

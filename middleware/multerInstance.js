@@ -165,4 +165,4 @@ class multerInstance {
     }
 }
 
-module.exports = multerInstance;
+module.exports = new multerInstance();

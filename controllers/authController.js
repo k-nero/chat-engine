@@ -57,11 +57,7 @@ class Authenticate
                 res.status(401).json({status: 'error', message: 'Username already exist'});
                 return;
             }
-            if(payload.password.length < 8)
-            {
-                res.status(401).json({status: 'error', message: 'Password must be at least 8 characters'});
-                return;
-            }
+
             payload.password = bcrypt.hashSync(payload.password, bcrypt.genSaltSync(10), null);
             let user = await User.create(payload);
             const token = jwt.sign({user}, process.env.JWT_SECRET, {algorithm: 'HS256',expiresIn: '1440h'},{} );

@@ -1,5 +1,6 @@
 const MessageAttachment = require("../models/MessageAttachment");
 const Message = require("../models/Message");
+const Chat = require("../models/Chat");
 class MessageController
 {
 
@@ -12,21 +13,6 @@ class MessageController
     {
         try
         {
-            if(!req.user._id)
-            {
-                res.status(401).send({ message: "Unauthorized" });
-                return;
-            }
-            if(!req.body.chatId)
-            {
-                res.status(400).send({ message: "Chat ID is required" });
-                return;
-            }
-            if(!req.body.content)
-            {
-                res.status(400).send({ message: "Message content is required" });
-                return;
-            }
             const payload = {
                 sender: req.user._id,
                 chat: req.body.chatId,
@@ -40,8 +26,45 @@ class MessageController
                 messageAttachment = await MessageAttachment.create({ path: payload.attachment, type: payload.attachmentType});
             }
 
-            const newMessage = await Message.create({sender: payload.sender, chat: payload.chat, content: payload.content, attachment: messageAttachment._id});
+            const newMessage = await Message.create({sender: payload.sender, chat: payload.chat, content: payload.content, attachment: messageAttachment});
+            const chat = await Chat.findById(payload.chat);
+            chat.lastMessage = newMessage;
+            chat.messages.push(newMessage);
+            await chat.save();
             res.status(201).send({message: "Succeed", data: newMessage});
+        }
+        catch (err)
+        {
+            res.status(500).send({ message: err.message });
+        }
+    }
+
+    async editMessage(req, res, next)
+    {
+
+    }
+
+    async reactMessage(req, res, next)
+    {
+        try
+        {
+
+        }
+        catch (err)
+        {
+            res.status(500).send({ message: err.message });
+        }
+    }
+
+    async recallMessage(req, res, next)
+    {
+        try
+        {
+            const messageId = req.body.messageId;
+            const chatId = req.body.chatId;
+            await Message.findByIdAndDelete(messageId);
+            await Chat.findById(chatId).messages.pop(messageId);
+            res.status(200).send({ message: "Succeed" });
         }
         catch (err)
         {
