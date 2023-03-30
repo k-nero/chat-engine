@@ -1,6 +1,6 @@
-const MessageAttachment = require("../models/MessageAttachment");
 const Message = require("../models/Message");
 const Chat = require("../models/Chat");
+
 class MessageController
 {
 
@@ -17,13 +17,18 @@ class MessageController
                 sender: req.user._id,
                 chat: req.body.chatId,
                 content: req.body.content,
+
+            }
+
+            const messageAttachment = {
                 attachment: req.file?.path,
                 attachmentType: req.body.attachmentType
-            }
-            let messageAttachment;
-            if(payload.attachment && payload.attachmentType)
+            };
+
+            if(payload.content === undefined && messageAttachment.attachment === undefined)
             {
-                messageAttachment = await MessageAttachment.create({ path: payload.attachment, type: payload.attachmentType});
+                res.status(400).send({ message: "Message content or attachment is required" });
+                return;
             }
 
             const newMessage = await Message.create({sender: payload.sender, chat: payload.chat, content: payload.content, attachment: messageAttachment});

@@ -7,7 +7,7 @@ class ValidateUserInfo
         this.validateNewMessage = this.validateNewMessage.bind(this);
     }
 
-    static validateLogin(req, res, next)
+    validateLogin(req, res, next)
     {
         const { username, password } = req.body;
         if (!username || !password)
@@ -18,10 +18,10 @@ class ValidateUserInfo
         next();
     }
 
-    static validateRegister(req, res, next)
+    validateRegister(req, res, next)
     {
-        const { username, password, email, fullName } = req.body;
-        if (!username || !password || !email || !fullName)
+        const { username, password, email, fullName, phone } = req.body;
+        if (!username || !password || !email || !fullName || ! phone)
         {
             res.status(400).send({ message: "Username, password, email and full name are required" });
             return;
@@ -44,7 +44,7 @@ class ValidateUserInfo
         next();
     }
 
-    static validateNewMessage(req, res, next)
+    validateNewMessage(req, res, next)
     {
         if(!req.user._id)
         {

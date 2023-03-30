@@ -1,19 +1,51 @@
 const mongoose  =  require ( 'mongoose' ) ;
-const schema  =  mongoose.Schema;
-const messageSchema  =  new schema (
+const Schema  =  mongoose.Schema;
+
+const messageAttachmentSchema = new Schema(
+    {
+        type: {
+            type: String,
+            required: true
+        },
+        path: {
+            type: String,
+            required: true
+        }
+    },
+    {
+        timestamps: true
+    });
+
+const messageReactionSchema = new Schema(
+    {
+        type: {
+            type: String,
+            required: true
+        },
+        sender: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
+    },
+    {
+        timestamps: true
+    });
+
+
+const messageSchema  =  new Schema (
     {
         sender: {
-            type: schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "User"
         },
         seenBy: [
             {
-                type: schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "User"
             }
         ],
         chat: {
-            type: schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Chat"
         },
         content: {
@@ -21,14 +53,14 @@ const messageSchema  =  new schema (
         },
         messageAttachments: [
             {
-                type: schema.Types.ObjectId,
-                ref: "MessageAttachment"
-            },
+                messageAttachmentSchema,
+                required: false
+            }
         ],
         messageReactions: [
             {
-                type: schema.Types.ObjectId,
-                ref: "MessageReaction"
+                messageReactionSchema,
+                required: false
             }
         ]
     },

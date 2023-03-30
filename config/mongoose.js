@@ -18,8 +18,5 @@ module.exports = (app, url) =>
 };
 function cleanup ()
 {
-    mongoose?.connection.close(function ()
-    {
-        process.exit(0);
-    });
+    mongoose?.connection.close();
 }

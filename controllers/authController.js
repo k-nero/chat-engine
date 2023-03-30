@@ -18,7 +18,7 @@ class Authenticate
                 username: req.body.username.trim()
             };
             let user;
-            user = await User.findOne({username: payload.username});
+            user = await User.findOne({username: payload.username}).lean();
             if(!user)
             {
                 res.status(401).json({status: 'error', message: 'Invalid username or password'});
@@ -30,7 +30,7 @@ class Authenticate
                 res.status(401).json({status: 'error', message: 'Invalid username or password'});
                 return;
             }
-            const token = jwt.sign({user}, process.env.JWT_SECRET, {algorithm: 'HS256', expiresIn: '1440h'}, {});
+            const token = jwt.sign({user}, process.env.JWT_SECRET, {algorithm: 'HS256', expiresIn: '720h'}, {});
             res.status(200).json({status: 'success', data: token});
         }
         catch(err)
@@ -46,12 +46,12 @@ class Authenticate
             const payload = {
                 password: req.body.password.trim(),
                 username: req.body.username.trim(),
+                phone: req.body.phone.trim(),
                 email: req.body.email.trim(),
                 fullName: req.body.fullName.trim(),
-                pic: req.file.pic.trim(),
             }
 
-            let isUserExisted = await User.findOne({username: payload.username});
+            let isUserExisted = await User.findOne({username: payload.username}).lean();
             if(isUserExisted)
             {
                 res.status(401).json({status: 'error', message: 'Username already exist'});
@@ -59,8 +59,14 @@ class Authenticate
             }
 
             payload.password = bcrypt.hashSync(payload.password, bcrypt.genSaltSync(10), null);
-            let user = await User.create(payload);
-            const token = jwt.sign({user}, process.env.JWT_SECRET, {algorithm: 'HS256',expiresIn: '1440h'},{} );
+            await User.create(payload);
+            let data = await User.findOne({username: payload.username}).lean();
+            if(!data)
+            {
+                res.status(401).json({status: 'error', message: 'Create account failed'});
+                return;
+            }
+            const token = jwt.sign({data}, process.env.JWT_SECRET, {algorithm: 'HS256',expiresIn: '720h'},{} );
             res.status(200).json({status: 'success', data: token});
         }
         catch (err)
