@@ -12,7 +12,7 @@ class UserController
         this.getUserProfile = this.getUserProfile.bind(this);
     }
 
-    async getUserProfile(req, res, next)
+    async getUserProfile(req, res)
     {
         try
         {
@@ -33,7 +33,7 @@ class UserController
         }
     }
 
-    async getUserInfo(req, res, next)
+    async getUserInfo(req, res)
     {
         try
         {
@@ -51,7 +51,7 @@ class UserController
         }
     }
 
-    async updateUser(req, res, next)
+    async updateUser(req, res)
     {
         try
         {
@@ -71,7 +71,7 @@ class UserController
         }
     }
 
-    async getChatList(req, res, next)
+    async getChatList(req, res)
     {
         try
         {
@@ -89,7 +89,7 @@ class UserController
         }
     }
 
-    async getFriendList(req, res, next)
+    async getFriendList(req, res)
     {
         try
         {
@@ -108,11 +108,11 @@ class UserController
         }
     }
 
-    async addFriend(req, res, next)
+    async addFriend(req, res)
     {
         try
         {
-            const friend = await User.findOne({ _id: req.body._id });
+            const friend = await User.findOne({ _id: req.params._id });
             if (!friend)
             {
                 res.status(400).send({ message: "User not found" });

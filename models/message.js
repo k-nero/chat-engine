@@ -44,25 +44,15 @@ const messageSchema  =  new Schema (
                 ref: "User"
             }
         ],
-        chat: {
-            type: Schema.Types.ObjectId,
-            ref: "Chat"
-        },
+        // chat: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: "Chat"
+        // },
         content: {
             type: String,
         },
-        messageAttachments: [
-            {
-                messageAttachmentSchema,
-                required: false
-            }
-        ],
-        messageReactions: [
-            {
-                messageReactionSchema,
-                required: false
-            }
-        ]
+        messageAttachments: [messageAttachmentSchema],
+        messageReactions: [messageReactionSchema]
     },
     {
         timestamps: true

@@ -11,7 +11,7 @@ class ChatController
         this.getMembers = this.getMembers.bind(this);
     }
 
-    async createChat(req, res, next)
+    async createChat(req, res)
     {
         try
         {
@@ -42,7 +42,7 @@ class ChatController
         }
     }
 
-    async renameChat(req, res, next)
+    async renameChat(req, res)
     {
         try
         {
@@ -65,13 +65,13 @@ class ChatController
         }
     }
 
-    async getAllMessages(req, res, next)
+    async getAllMessages(req, res)
     {
         try
         {
             const chatId = req.params.chatId;
-            const messages = Chat.findById(chatId).populate("messages").lean().exec();
-            res.status(200).send({ message: "Succeed", data: messages });
+            const chat = await Chat.findById(chatId).populate("messages").lean().exec();
+            res.status(200).send({ message: "Succeed", data: chat.messages });
         }
         catch (err)
         {
@@ -79,7 +79,7 @@ class ChatController
         }
     }
 
-    async leaveChat(req, res, next)
+    async leaveChat(req, res)
     {
         try
         {
@@ -124,7 +124,7 @@ class ChatController
         }
     }
 
-    async getMembers(req, res, next)
+    async getMembers(req, res)
     {
         try
         {
