@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const Authenticate = require('../middleware/authenticate');
 
-router.put('/add-friend/:_id', Authenticate.authenticate, userController.addFriend);
+router.put('/add-friend/:userId', Authenticate.authenticate, userController.addFriend);
 router.get('/get-chats', Authenticate.authenticate, userController.getChatList);
 router.get('/get-friends', Authenticate.authenticate, userController.getFriendList);
 router.patch('/update-profile', Authenticate.authenticate, userController.updateUser);

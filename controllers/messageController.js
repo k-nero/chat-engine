@@ -21,11 +21,12 @@ class MessageController
             const payload = {
                 sender: req.user._id,
                 content: req.body.content,
-            }
+                chat: req.params.chatId
+            };
 
             if(payload.content === undefined )
             {
-                res.status(400).send({ message: "Message content or attachment is required" });
+                res.status(400).send({ message: "Message content is required" });
                 return;
             }
 
@@ -46,22 +47,28 @@ class MessageController
     {
         try
         {
-            const messageId = req.params.messageId
             const payload = {
                 type: req.body.type,
-                path: req.file.path
+                path: req.file.path,
+                sender: req.user._id,
+                content: req.body.content,
+                chat: req.params.chatId
             };
 
-            if(payload.type === undefined || payload.path === undefined)
+            if(payload.content === undefined || payload.path === undefined)
             {
-                res.status(400).send({ message: "Attachment type is required" });
+                res.status(400).send({ message: "Message content is required" });
                 return;
             }
 
-            const message = await Message.findById(messageId);
-            message.messageAttachments.push({type: payload.type, path: payload.path});
-            await message.save();
-            res.status(201).send({message: "Succeed", data: message});
+            const newMessage = await Message.create({sender: payload.sender, content: payload.content});
+            newMessage.messageAttachments.push({type: payload.type, path: payload.path});
+            await newMessage.save();
+            const chat = await Chat.findById(payload.chat);
+            chat.lastMessage = newMessage;
+            chat.messages.push(newMessage);
+            await chat.save();
+            res.status(201).send({message: "Succeed", data: newMessage});
         }
         catch (err)
         {
@@ -74,9 +81,7 @@ class MessageController
         try
         {
             const messageId = req.params.messageId
-            const payload = {
-                content: req.body.content
-            };
+            const payload = {content: req.body.content};
 
             if(payload.content === undefined)
             {
@@ -130,7 +135,7 @@ class MessageController
             const chatId = req.params.chatId;
             await Message.findByIdAndDelete(messageId);
             const chat = await Chat.findById(chatId);
-            chat.messages.pop(messageId);
+            chat.messages.splice(chat.messages.indexOf(messageId), 1);
             chat.save();
             res.status(200).send({ message: "Succeed" });
         }

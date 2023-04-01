@@ -9,6 +9,7 @@ class ChatController
         this.renameChat = this.renameChat.bind(this);
         this.leaveChat = this.leaveChat.bind(this);
         this.getMembers = this.getMembers.bind(this);
+        this.addMembers = this.addMembers.bind(this);
     }
 
     async createChat(req, res)
@@ -34,6 +35,12 @@ class ChatController
 
             payload.users.push(req.user);
             const newChat = await Chat.create({ members: payload.users, chatAdmin: payload.chatAdmin, chatName: payload.chatName });
+            for (let i = 0; i < payload.users.length; i++)
+            {
+                const user = await User.findById(payload.users[i]._id);
+                user.chats.push(newChat._id);
+                await user.save();
+            }
             res.status(201).send({ message: "Succeed", data: newChat });
         }
         catch (err)
@@ -128,7 +135,6 @@ class ChatController
     {
         try
         {
-            //TODO: Check if user is a member of the chat, avoid sending all info
             const chat = await Chat.findById(req.params.chatId).populate("members").lean().exec();
             const members = {
                 members: chat.members.map(member => {
@@ -141,6 +147,18 @@ class ChatController
                 })
             }
             res.status(200).send({ message: "Succeed", data: members.members })
+        }
+        catch (err)
+        {
+            res.status(500).send({ message: err.message });
+        }
+    }
+
+    async addMembers(req, res)
+    {
+        try
+        {
+
         }
         catch (err)
         {

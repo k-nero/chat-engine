@@ -112,7 +112,7 @@ class UserController
     {
         try
         {
-            const friend = await User.findOne({ _id: req.params._id });
+            const friend = await User.findOne({ _id: req.params.userId });
             if (!friend)
             {
                 res.status(400).send({ message: "User not found" });
