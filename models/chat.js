@@ -6,6 +6,9 @@ const chatSchema = new Schema(
         chatName: {
             type: String,
         },
+        chatAvatar: {
+            type: String,
+        },
         lastMessage: {
             type: Schema.Types.ObjectId,
             ref: "Message"

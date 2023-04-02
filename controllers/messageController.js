@@ -55,7 +55,7 @@ class MessageController
                 chat: req.params.chatId
             };
 
-            if(payload.content === undefined || payload.path === undefined)
+            if(payload.path === undefined)
             {
                 res.status(400).send({ message: "Message content is required" });
                 return;
@@ -64,11 +64,14 @@ class MessageController
             const newMessage = await Message.create({sender: payload.sender, content: payload.content});
             newMessage.messageAttachments.push({type: payload.type, path: payload.path});
             await newMessage.save();
-            const chat = await Chat.findById(payload.chat);
-            chat.lastMessage = newMessage;
-            chat.messages.push(newMessage);
-            await chat.save();
-            res.status(201).send({message: "Succeed", data: newMessage});
+            if(newMessage)
+            {
+                const chat = await Chat.findById(payload.chat);
+                chat.lastMessage = newMessage;
+                chat.messages.push(newMessage);
+                await chat.save();
+                res.status(201).send({message: "Succeed", data: newMessage});
+            }
         }
         catch (err)
         {

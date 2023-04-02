@@ -136,3 +136,4 @@ dist
 .idea
 *.iml
 gen
+/uploads/

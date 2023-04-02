@@ -93,7 +93,6 @@ class UserController
     {
         try
         {
-
             const user = await User.findOne({ _id: req.user.id }).populate("friends", "fullName pic").lean().exec();
             if (!user)
             {

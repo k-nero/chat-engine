@@ -1,10 +1,10 @@
 const multer = require('multer');
 const path = require('path');
 
-const imageStorage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: function(req, file, cb)
     {
-        cb(null, './uploads/images');
+        cb(null, './uploads/' + req.body.type);
     },
     filename: function(req, file, cb)
     {
@@ -12,28 +12,4 @@ const imageStorage = multer.diskStorage({
     }
 });
 
-const videoStorage = multer.diskStorage({
-    destination: function(req, file, cb)
-    {
-        cb(null, './uploads/videos');
-    },
-    filename: function(req, file, cb)
-    {
-        cb(null, new Date().getTime() + path.extname(file.originalname));
-    }
-});
-
-const fileStorage = multer.diskStorage({
-    destination: function(req, file, cb)
-    {
-        cb(null, './uploads/files');
-    },
-    filename: function(req, file, cb)
-    {
-        cb(null, new Date().getTime() + path.extname(file.originalname));
-    }
-});
-
-exports.uploadVideo = multer({storage: videoStorage});
-exports.uploadImage = multer({storage: imageStorage});
-exports.uploadVideo = multer({storage: fileStorage});
+exports.uploadMedia = multer({storage: storage});

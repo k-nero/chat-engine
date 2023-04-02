@@ -1,5 +1,6 @@
 const Chat = require('../models/chat');
 const User = require('../models/users');
+const Message = require('../models/message');
 
 class ChatController
 {
@@ -108,7 +109,11 @@ class ChatController
                 chat.members.splice(chat.members.findIndex(member => member._id.toString() === payload.targetUser), 1);
                 if(chat.members.length === 0)
                 {
-                    //await Chat.findByIdAndDelete(payload.chatId);
+                    const chat = await Chat.findByIdAndDelete(payload.chatId);
+                    for (let i = 0; i < chat.messages.length; i++)
+                    {
+                       await Message.findByIdAndDelete(chat.messages[i]);
+                    }
                 }
             }
             else
@@ -116,7 +121,11 @@ class ChatController
                 chat.members.splice(chat.members.findIndex(member => member._id.toString() === payload.userId), 1);
                 if(chat.members.length === 0)
                 {
-                    //await Chat.findByIdAndDelete(payload.chatId);
+                    const chat = await Chat.findByIdAndDelete(payload.chatId);
+                    for (let i = 0; i < chat.messages.length; i++)
+                    {
+                        await Message.findByIdAndDelete(chat.messages[i]);
+                    }
                 }
             }
             const user = await User.findById(payload.targetUser);
