@@ -118,7 +118,7 @@ This is an example of how to list things you need to use the software and how to
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/thanhplassma/shorten-link.git
+   git clone https://github.com/thanhplassma/chat-engine.git
    ```
 2. Install NPM packages
    ```sh
