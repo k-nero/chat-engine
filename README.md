@@ -32,7 +32,7 @@
 
 [//]: # (  </a>)
 
-<h3 align="center">Shorten Link</h3>
+<h3 align="center"></h3>
 
   <p align="center">
     <br />
