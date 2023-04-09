@@ -14,12 +14,7 @@ class MediaController
     {
         try
         {
-            res.status(200).sendFile(path.resolve(req.query.path), function (err) {
-                if (err)
-                {
-                    res.status(500).json({status: 'error', message: err.message});
-                }
-            });
+            res.status(200).sendFile(path.resolve(req.query.path), (err) => {});
         }
         catch (err)
         {

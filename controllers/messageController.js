@@ -31,6 +31,7 @@ class MessageController
             }
 
             const newMessage = await Message.create({sender: payload.sender, content: payload.content});
+            io.sockets.in(payload.chat).emit("message", newMessage);
             const chat = await Chat.findById(payload.chat);
             chat.lastMessage = newMessage;
             chat.messages.push(newMessage);
@@ -63,6 +64,7 @@ class MessageController
 
             const newMessage = await Message.create({sender: payload.sender, content: payload.content});
             newMessage.messageAttachments.push({type: payload.type, path: payload.path});
+            io.sockets.in(payload.chat).emit("message", newMessage);
             await newMessage.save();
             if(newMessage)
             {

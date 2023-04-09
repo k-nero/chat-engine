@@ -63,6 +63,7 @@ class ChatController
                 return;
             }
             chat.chatName = chatName;
+            io.sockets.in(chatId).emit("renameChat", chatName);
             chat = await chat.save();
             res.status(200).send({ message: "Succeed", data: chat });
 
@@ -78,7 +79,13 @@ class ChatController
         try
         {
             const chatId = req.params.chatId;
-            const chat = await Chat.findById(chatId).populate("messages").lean().exec();
+            const chat = await Chat.findById(chatId).populate({
+                path: "messages",
+                populate: {
+                    path: "sender",
+                    select: "fullName pic"
+                }
+            }).lean().exec();
             res.status(200).send({ message: "Succeed", data: chat.messages });
         }
         catch (err)

@@ -75,7 +75,18 @@ class UserController
     {
         try
         {
-            const user = await User.findOne({ _id: req.user.id }).populate("chats").lean().exec();
+            const user = await User.findOne({ _id: req.user._id }).populate({
+                path: "chats",
+                select: "chatName",
+                populate: {
+                    path: "lastMessage",
+                    select: "content createdAt",
+                    populate: {
+                        path: "sender",
+                        select: "fullName"
+                    }
+                }
+            }).lean().exec();
             if (!user)
             {
                 res.status(400).send({ message: "User not found" });

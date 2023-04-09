@@ -30,8 +30,9 @@ class Authenticate
                 res.status(401).json({status: 'error', message: 'Invalid username or password'});
                 return;
             }
-            const token = jwt.sign({user}, process.env.JWT_SECRET, {algorithm: 'HS256', expiresIn: '720h'}, {});
-            res.status(200).json({status: 'success', data: token});
+            jwt.sign({_id: user._id}, process.env.JWT_SECRET, {algorithm: 'HS256', expiresIn: '720h'}, (err, token) => {
+                res.status(200).json({status: 'success', data: token});
+            });
         }
         catch(err)
         {
@@ -60,14 +61,15 @@ class Authenticate
 
             payload.password = bcrypt.hashSync(payload.password, bcrypt.genSaltSync(10), null);
             await User.create(payload);
-            let data = await User.findOne({username: payload.username}).lean();
-            if(!data)
+            let user = await User.findOne({username: payload.username}).lean();
+            if(!user)
             {
                 res.status(401).json({status: 'error', message: 'Create account failed'});
                 return;
             }
-            const token = jwt.sign({data}, process.env.JWT_SECRET, {algorithm: 'HS256',expiresIn: '720h'},{} );
-            res.status(200).json({status: 'success', data: token});
+            jwt.sign({_id: user._id}, process.env.JWT_SECRET, {algorithm: 'HS256',expiresIn: '720h'}, (err, token) => {
+                res.status(200).json({status: 'success', data: token});
+            });
         }
         catch (err)
         {

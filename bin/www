@@ -4,30 +4,71 @@
  * Module dependencies.
  */
 
-let app = require('../app');
-let debug = require('debug')('chat-engine:server');
-let http = require('http');
+const app = require('../app');
+const debug = require('debug')('chat-engine:server');
+const http = require('https');
+const fs = require("fs");
+const { App } = require("uWebSockets.js");
+const { Server } = require("socket.io");
+const WebSocket = require("../socket.IO/socket");
+
 
 /**
  * Get port from environment and store in Express.
  */
 
-let port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
+const ws_port = normalizePort(process.env.WSPORT || '3001');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
+let server;
 
-let server = http.createServer(app);
+let cert;
+let key;
+
+try
+{
+    cert = fs.readFileSync("certs/cert.pem");
+    key = fs.readFileSync("certs/key.pem");
+    if(cert && key)
+    {
+        server = http.createServer({key: key, cert: cert}, app);
+    }
+}
+catch(err)
+{
+    console.log(err);
+    console.log("Could not find certs or error while create secure server, fallback to http server");
+    if(!server && err)
+    {
+        server = http.createServer(app);
+    }
+}
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+/**
+ * Create WebSocket server.
+ */
+const uws = App({cert_file_name: "certs/cert.pem", key_file_name: "certs/key.pem"});
+global.io = new Server();
+io.attachApp(uws);
+
+io.on("connection", async (socket) => {
+    await WebSocket.connection(socket);
+});
+
+uws.listen(ws_port, () => {
+    console.log("Websocket is listening to port " + ws_port);
+});
 
 /**
  * Normalize a port into a number, string, or false.
