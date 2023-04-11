@@ -14,7 +14,7 @@ class Authenticate
     {
         if (!req.headers.authorization)
         {
-            res.status(400).send({message: "Authorization token was expired or was not valid"});
+            res.status(400).send({message: "Authorization token is missing"});
             return;
         }
         const token = req.headers.authorization.split(" ")[1];
@@ -23,18 +23,19 @@ class Authenticate
             let _id;
             try
             {
-                jwt.verify(token, process.env.JWT_SECRET, {algorithm: 'HS256', expiresIn: '720h'}, (err, result) => {
-                    if (result.exp * 1000 < Date.now())
+                jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+                    if (decoded.exp * 1000 < Date.now())
                     {
-                        res.status(400).send({message: "Authorization token was expired or was not valid"});
+                        res.status(400).send({message: "Authorization token was expired"});
                         return;
                     }
-                    _id = result._id;
+                    _id = decoded._id;
                 });
 
             }
             catch (err)
             {
+                console.log(err.message);
                 res.status(400).send({message: "Authorization token was expired or was not valid"});
                 return;
             }

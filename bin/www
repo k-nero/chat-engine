@@ -18,7 +18,7 @@ const WebSocket = require("../socket.IO/socket");
  */
 
 const port = normalizePort(process.env.PORT || '3000');
-const ws_port = normalizePort(process.env.WSPORT || '3001');
+const ws_port = normalizePort(process.env.WSPORT || port + 1);
 app.set('port', port);
 
 /**

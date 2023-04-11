@@ -10,6 +10,7 @@ class ChatController
         this.renameChat = this.renameChat.bind(this);
         this.leaveChat = this.leaveChat.bind(this);
         this.getMembers = this.getMembers.bind(this);
+        this.getChatInfo = this.getChatInfo.bind(this);
         this.addMembers = this.addMembers.bind(this);
     }
 
@@ -35,7 +36,7 @@ class ChatController
             }
 
             payload.users.push(req.user);
-            const newChat = await Chat.create({ members: payload.users, chatAdmin: payload.chatAdmin, chatName: payload.chatName });
+            const newChat = await Chat.create({ members: payload.users, chatAvatar: payload.users[1].pic , chatAdmin: payload.chatAdmin, chatName: payload.chatName });
             for (let i = 0; i < payload.users.length; i++)
             {
                 const user = await User.findById(payload.users[i]._id);
@@ -175,6 +176,20 @@ class ChatController
         try
         {
 
+        }
+        catch (err)
+        {
+            res.status(500).send({ message: err.message });
+        }
+    }
+
+    async getChatInfo(req, res)
+    {
+        try
+        {
+            const chatId = req.params.chatId;
+            const chat = await Chat.findById(chatId).lean().exec();
+            res.status(200).send({ message: "Succeed", data: chat });
         }
         catch (err)
         {
