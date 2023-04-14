@@ -31,7 +31,8 @@ class MessageController
             }
 
             const newMessage = await Message.create({sender: payload.sender, content: payload.content});
-            io.sockets.in(payload.chat).emit("message", newMessage);
+            const message = await Message.findOne({_id: newMessage._id}).populate("sender", "fullName pic").lean().exec();
+            io.sockets.in(payload.chat).emit("message", message);
             const chat = await Chat.findById(payload.chat);
             chat.lastMessage = newMessage;
             chat.messages.push(newMessage);

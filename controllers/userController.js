@@ -77,7 +77,7 @@ class UserController
         {
             const user = await User.findOne({ _id: req.user._id }).populate({
                 path: "chats",
-                select: "chatName",
+                select: "chatName chatAvatar",
                 populate: {
                     path: "lastMessage",
                     select: "content createdAt",

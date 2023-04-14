@@ -59,7 +59,7 @@ server.on('listening', onListening);
  * Create WebSocket server.
  */
 const uws = App({cert_file_name: "certs/cert.pem", key_file_name: "certs/key.pem"});
-global.io = new Server();
+global.io = new Server({ cors: { origin: "http://localhost:3000" } });
 io.attachApp(uws);
 
 io.on("connection", async (socket) => {

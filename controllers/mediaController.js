@@ -14,7 +14,13 @@ class MediaController
     {
         try
         {
-            res.status(200).sendFile(path.resolve(req.query.path), (err) => {});
+            const filePath = req.query.path;
+            if(filePath === 'undefined')
+            {
+                res.status(404).send({ message: "Path is required" });
+                return;
+            }
+            res.status(200).sendFile(path.resolve(filePath), (err) => {});
         }
         catch (err)
         {

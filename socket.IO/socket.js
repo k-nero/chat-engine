@@ -9,8 +9,19 @@ class WebSocket
 
     async connection(socket)
     {
-        console.log("Client connected");
-
+        console.log("Client connected - " + socket.id);
+        socket.on('join', (data) =>
+            {
+                //this.users.push({ id: socket.id, room: data.room });
+              /*  this.users = this.users.filter((user, index, self) =>
+                    index === self.findIndex((t) => (
+                        t.room === user.room && t.id === user.id
+                    )));*/
+                console.log(this.users);
+                socket.join(data.room);
+          /*     socket.emit('users', this.users);
+                socket.broadcast.emit('users', this.users);*/
+            });
         await this.disconnect(socket);
     }
 
@@ -18,7 +29,8 @@ class WebSocket
     {
         socket.on("disconnect", () =>
         {
-            console.log("Client disconnected");
+            console.log("Client disconnected - " + socket.id);
+            socket.leave(socket.room);
         });
 
     }
