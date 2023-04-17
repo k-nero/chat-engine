@@ -83,7 +83,7 @@ class UserController
                     select: "content createdAt",
                     populate: {
                         path: "sender",
-                        select: "fullName"
+                        select: "fullName pic"
                     },
                 },
                 {

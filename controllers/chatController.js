@@ -35,10 +35,10 @@ class ChatController
             if(payload.chatName === undefined && payload.users.length > 2)
             {
                 payload.chatName = payload.users.map(user => user.fullName).join(", ");
-                //payload.chaAvatar = payload.users[0].pic;
+                //payload.chatAvatar = payload.users[0].pic;
             }
 
-            const newChat = await Chat.create({ members: payload.users, chatAvatar: payload.users[0].pic, chatAdmin: payload.chatAdmin, chatName: payload.chatName });
+            const newChat = await Chat.create({ members: payload.users, chatAvatar: payload?.chatAvatar, chatAdmin: payload.chatAdmin, chatName: payload.chatName });
             for (let i = 0; i < payload.users.length; i++)
             {
                 const user = await User.findById(payload.users[i]._id);

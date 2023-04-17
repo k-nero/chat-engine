@@ -32,6 +32,7 @@ class MessageController
 
             const newMessage = await Message.create({sender: payload.sender, content: payload.content});
             const message = await Message.findOne({_id: newMessage._id}).populate("sender", "fullName pic").lean().exec();
+            message.chat = payload.chat;
             io.sockets.in(payload.chat).emit("message", message);
             const chat = await Chat.findById(payload.chat);
             chat.lastMessage = newMessage;
@@ -123,7 +124,7 @@ class MessageController
             }
 
             const message = await Message.findById(messageId);
-            message.messageReactions.push({type: payload.type, sender: payload.sender});
+            message.messageReactions.push({ type: payload.type, sender: payload.sender });
             await message.save();
             res.status(201).send({message: "Succeed", data: message});
         }
