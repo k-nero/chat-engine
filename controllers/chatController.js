@@ -30,12 +30,15 @@ class ChatController
                payload.users.push(user);
             }
 
-            if(payload.chatName === undefined)
+            payload.users.push(req.user);
+
+            if(payload.chatName === undefined && payload.users.length > 2)
             {
                 payload.chatName = payload.users.map(user => user.fullName).join(", ");
+                //payload.chaAvatar = payload.users[0].pic;
             }
-            payload.users.push(req.user);
-            const newChat = await Chat.create({ members: payload.users, chatAvatar: payload.users[0].pic , chatAdmin: payload.chatAdmin, chatName: payload.chatName });
+
+            const newChat = await Chat.create({ members: payload.users, chatAvatar: payload.users[0].pic, chatAdmin: payload.chatAdmin, chatName: payload.chatName });
             for (let i = 0; i < payload.users.length; i++)
             {
                 const user = await User.findById(payload.users[i]._id);
@@ -187,7 +190,11 @@ class ChatController
         try
         {
             const chatId = req.params.chatId;
-            const chat = await Chat.findById(chatId).lean().exec();
+            const chat = await Chat.findById(chatId).populate({
+                path: "members",
+                select: "fullName pic",
+                match : { _id: { $ne: req.user._id } }
+            }).lean().exec();
             res.status(200).send({ message: "Succeed", data: chat });
         }
         catch (err)

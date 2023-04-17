@@ -78,14 +78,20 @@ class UserController
             const user = await User.findOne({ _id: req.user._id }).populate({
                 path: "chats",
                 select: "chatName chatAvatar",
-                populate: {
+                populate: [{
                     path: "lastMessage",
                     select: "content createdAt",
                     populate: {
                         path: "sender",
                         select: "fullName"
-                    }
-                }
+                    },
+                },
+                {
+                    path: "members",
+                    select: "fullName pic",
+                    match: { _id: { $ne: req.user._id } }
+                }]
+
             }).lean().exec();
             if (!user)
             {
