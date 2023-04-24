@@ -1,6 +1,7 @@
 const User = require('../models/users');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const algoliaClient = require('../config/algolia');
 
 class Authenticate
 {
@@ -67,6 +68,14 @@ class Authenticate
                 res.status(401).json({status: 'error', message: 'Create account failed'});
                 return;
             }
+            await algoliaClient.initIndex('Chat-User').saveObject({
+                username: user.username,
+                fullName: user.fullName,
+                pic: user.pic,
+                phone: user.phone,
+                email: user.email,
+
+            });
             jwt.sign({_id: user._id}, process.env.JWT_SECRET, {algorithm: 'HS256',expiresIn: '720h'}, (err, token) => {
                 res.status(200).json({status: 'success', data: token});
             });
