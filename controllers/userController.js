@@ -1,4 +1,5 @@
 const User = require("../models/users");
+const UserCache = require("../models/user.cache.js");
 
 class UserController
 {
@@ -18,11 +19,17 @@ class UserController
         {
             if(req.params.userId)
             {
-                const user = await User.findOne({ _id: req.params.userId }).lean().exec();
-                if (!user)
+                let user = await UserCache.fetch(req.params.userId);
+                if (!user._id)
                 {
-                    res.status(400).send({ message: "User not found" });
-                    return;
+                    user = User.findById(req.params.userId).lean(true).exec();
+                    if(!user._id)
+                    {
+                        res.status(400).send({ message: "User not found" });
+                        return;
+                    }
+                    user = JSON.parse(JSON.stringify(user));
+                    await UserCache.save(user._id.toString(), user);
                 }
                 res.status(200).send(user);
             }
@@ -37,11 +44,17 @@ class UserController
     {
         try
         {
-            const user = await User.findOne({ _id: req.user._id }).lean().exec();
-            if (!user)
+            let user = await UserCache.fetch(req.user._id);
+            if (!user._id)
             {
-                res.status(400).send({ message: "User not found" });
-                return;
+                user = User.findById(req.user._id).lean(true).exec();
+                if(!user._id)
+                {
+                    res.status(400).send({ message: "User not found" });
+                    return;
+                }
+                user = JSON.parse(JSON.stringify(user));
+                await UserCache.save(user._id.toString(), user);
             }
             res.status(200).send(user);
         }

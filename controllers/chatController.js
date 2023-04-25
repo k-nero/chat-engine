@@ -1,6 +1,7 @@
 const Chat = require('../models/chat');
 const User = require('../models/users');
 const Message = require('../models/message');
+const UserCache = require('../models/user.cache.js');
 
 class ChatController
 {
@@ -32,6 +33,13 @@ class ChatController
 
             payload.users.push(req.user);
 
+            let chat = await Chat.find({ members: { $all: payload.users } }).lean(true).exec();
+            if(chat.length > 0)
+            {
+                res.status(304).send({ message: "Chat already exists", data: chat[0] });
+                return;
+            }
+
             if(payload.chatName === undefined && payload.users.length > 2)
             {
                 payload.chatName = payload.users.map(user => user.fullName).join(", ");
@@ -44,6 +52,18 @@ class ChatController
                 const user = await User.findById(payload.users[i]._id);
                 user.chats.push(newChat._id);
                 await user.save();
+                {
+                    let cacheUser = await UserCache.fetch(user._id);
+                    if (cacheUser._id)
+                    {
+                        cacheUser.chats.push(newChat._id.toString());
+                    }
+                    else
+                    {
+                        cacheUser = JSON.parse(JSON.stringify(user));
+                    }
+                    cacheUser = await UserCache.save(cacheUser._id ,cacheUser);
+                }
             }
             res.status(201).send({ message: "Succeed", data: newChat });
         }
@@ -195,6 +215,11 @@ class ChatController
                 select: "fullName pic",
                 match : { _id: { $ne: req.user._id } }
             }).lean().exec();
+            if(!chat)
+            {
+                res.status(404).send({ message: "Chat not found" });
+                return;
+            }
             res.status(200).send({ message: "Succeed", data: chat });
         }
         catch (err)

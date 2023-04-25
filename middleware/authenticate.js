@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const jwt = require("jsonwebtoken");
 const User = require("../models/users");
+const UserCache = require("../models/user.cache.js");
 
 class Authenticate
 {
@@ -39,7 +40,14 @@ class Authenticate
                 res.status(400).send({message: "Authorization token was expired or was not valid"});
                 return;
             }
-            req.user = await User.findOne({ _id: _id }).lean().exec();
+            let user = await UserCache.fetch(_id);
+            if(!user._id)
+            {
+                user = await User.findById(_id).lean(true).exec();
+                user = JSON.parse(JSON.stringify(user));
+                await UserCache.save(user._id.toString(), user);
+            }
+            req.user = user;
             next();
         }
     };
