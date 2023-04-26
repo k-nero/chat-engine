@@ -2,6 +2,7 @@ const Chat = require('../models/chat');
 const User = require('../models/users');
 const Message = require('../models/message');
 const UserCache = require('../models/user.cache.js');
+const WebSocket = require('../socket.IO/socket').WebSocket;
 
 class ChatController
 {
@@ -49,9 +50,18 @@ class ChatController
             const newChat = await Chat.create({ members: payload.users, chatAvatar: payload?.chatAvatar, chatAdmin: payload.chatAdmin, chatName: payload.chatName });
             for (let i = 0; i < payload.users.length; i++)
             {
+                for(let k = 0; k < WebSocket.users.length; k++)
+                {
+                    if(WebSocket.users[k].username === payload.users[i].username.toString())
+                    {
+                        const socket = io.sockets.sockets.get(WebSocket.users[k].id);
+                        socket.join(newChat._id);
+                    }
+                }
                 const user = await User.findById(payload.users[i]._id);
                 user.chats.push(newChat._id);
                 await user.save();
+
                 {
                     let cacheUser = await UserCache.fetch(user._id);
                     if (cacheUser._id)
@@ -62,9 +72,10 @@ class ChatController
                     {
                         cacheUser = JSON.parse(JSON.stringify(user));
                     }
-                    cacheUser = await UserCache.save(cacheUser._id ,cacheUser);
+                    cacheUser = await UserCache.save(cacheUser._id, cacheUser);
                 }
             }
+            io.sockets.in(newChat._id).emit("new-chat", newChat);
             res.status(201).send({ message: "Succeed", data: newChat });
         }
         catch (err)

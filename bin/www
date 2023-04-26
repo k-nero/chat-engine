@@ -8,7 +8,7 @@ const app = require('../app');
 const debug = require('debug')('chat-engine:server');
 const http = require('https');
 const fs = require("fs");
-const { App } = require("uWebSockets.js");
+const { SSLApp } = require("uWebSockets.js");
 const { Server } = require("socket.io");
 const WebSocket = require("../socket.IO/socket");
 
@@ -58,7 +58,7 @@ server.on('listening', onListening);
 /**
  * Create WebSocket server.
  */
-const uws = App({cert_file_name: "certs/cert.pem", key_file_name: "certs/key.pem"});
+const uws = SSLApp({cert_file_name: "certs/cert.pem", key_file_name: "certs/key.pem"});
 global.io = new Server({ cors: { origin: "http://localhost:3000" } });
 io.attachApp(uws);
 

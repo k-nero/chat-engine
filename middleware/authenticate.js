@@ -2,6 +2,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/users");
 const UserCache = require("../models/user.cache.js");
+const Redis = require("../config/redis");
 
 class Authenticate
 {
@@ -36,7 +37,6 @@ class Authenticate
             }
             catch (err)
             {
-                console.log(err.message);
                 res.status(400).send({message: "Authorization token was expired or was not valid"});
                 return;
             }
@@ -47,6 +47,7 @@ class Authenticate
                 user = JSON.parse(JSON.stringify(user));
                 await UserCache.save(user._id.toString(), user);
             }
+            await UserCache.expire(_id.toString(), 60 * 60 * 24);
             req.user = user;
             next();
         }
