@@ -73,16 +73,13 @@ npm start
 
 ## Gallery
 <div align="center">
-    <img width="50%" src="./res/home-page.png" alt="home-page"/>
-    <p>Home page</p>
+    <img width="50%" src="./preview/preview1.png" alt="home-page"/>
 </div>
 <div align="center">
-    <img width="50%" src="./res/login-page.png" alt="login-page"/>
-    <p>Login page</p>
+    <img width="50%" src="./preview/preview2.png" alt="login-page"/>
 </div>
 <div align="center">
-    <img width="50%" src="./res/admin-dashboard.png" alt="admin-dashboard"/>
-    <p>Admin dashboard</p>
+    <img width="50%" src="./preview/preview3.png" alt="admin-dashboard"/>
 </div>
 
 ## License
