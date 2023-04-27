@@ -28,6 +28,8 @@ Realtime chat server is a part of the project Realtime chat app
   <a href="https://react.dev/" target="blank" rel="noreferrer"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/></a> 
   <a href="https://reactrouter.com" target="blank" rel="noreferrer"><img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white"/></a> 
   <a href="https://ant.design" target="blank" rel="noreferrer"><img src="https://img.shields.io/badge/-AntDesign-%230170FE?style=for-the-badge&logo=ant-design&logoColor=white"/></a>
+    <a href="https://ant.design" target="blank" rel="noreferrer"><img src="https://img.shields.io/static/v1?style=for-the-badge&message=Algolia&color=5468FF&logo=Algolia&logoColor=FFFFFF&label="/></a>
+
 </div>
 <!-- Back-end -->
 <div align="center">
