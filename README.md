@@ -21,9 +21,6 @@ Realtime chat server is a part of the project Realtime chat app
 - ReactJS to build up the front-end
 - ExpressJS to create RESTful API
 - MongoDB database to store data
-<div align="center">
-    <img src="./res/app-stack.png" alt="app-stack"/>
-</div>
 
 ## Tech Stack
 <!-- Front-end -->
