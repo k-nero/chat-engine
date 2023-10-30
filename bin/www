@@ -31,8 +31,8 @@ let key;
 
 try
 {
-    cert = fs.readFileSync("certs/cert.pem");
-    key = fs.readFileSync("certs/key.pem");
+    cert = fs.readFileSync("../certs/cert.pem");
+    key = fs.readFileSync("../certs/key.pem");
     if(cert && key)
     {
         server = http.createServer({key: key, cert: cert}, app);
@@ -58,7 +58,7 @@ server.on('listening', onListening);
 /**
  * Create WebSocket server.
  */
-const uws = SSLApp({cert_file_name: "certs/cert.pem", key_file_name: "certs/key.pem"});
+const uws = SSLApp({cert_file_name: "../certs/cert.pem", key_file_name: "../certs/key.pem"});
 global.io = new Server({ cors: { origin: "http://localhost:3000" } });
 io.attachApp(uws);
 
