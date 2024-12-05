@@ -18,7 +18,7 @@
     "multer": "^1.4.5-lts.1",
     "redis": "^4.6.10",
     "redis-om": "^0.4.7",
-    "socket.io": "^4.7.2",
+    "socket.io": "^4.8.1",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.33.0"
   }
 }
